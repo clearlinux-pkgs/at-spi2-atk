@@ -4,15 +4,27 @@
 #
 Name     : at-spi2-atk
 Version  : 2.21.91
-Release  : 2
+Release  : 3
 URL      : http://ftp.gnome.org/pub/GNOME/sources/at-spi2-atk/2.21/at-spi2-atk-2.21.91.tar.xz
 Source0  : http://ftp.gnome.org/pub/GNOME/sources/at-spi2-atk/2.21/at-spi2-atk-2.21.91.tar.xz
 Summary  : ATK/D-Bus Bridge
 Group    : Development/Tools
 License  : GPL-2.0 LGPL-2.0
 Requires: at-spi2-atk-lib
+BuildRequires : gcc-dev32
+BuildRequires : gcc-libgcc32
+BuildRequires : gcc-libstdc++32
 BuildRequires : gettext
+BuildRequires : glibc-dev32
+BuildRequires : glibc-libc32
 BuildRequires : perl(XML::Parser)
+BuildRequires : pkgconfig(32atk)
+BuildRequires : pkgconfig(32atspi-2)
+BuildRequires : pkgconfig(32dbus-1)
+BuildRequires : pkgconfig(32glib-2.0)
+BuildRequires : pkgconfig(32gmodule-2.0)
+BuildRequires : pkgconfig(32gobject-2.0)
+BuildRequires : pkgconfig(32libxml-2.0)
 BuildRequires : pkgconfig(atk)
 BuildRequires : pkgconfig(atspi-2)
 BuildRequires : pkgconfig(dbus-1)
@@ -38,6 +50,16 @@ Provides: at-spi2-atk-devel
 dev components for the at-spi2-atk package.
 
 
+%package dev32
+Summary: dev32 components for the at-spi2-atk package.
+Group: Default
+Requires: at-spi2-atk-lib32
+Requires: at-spi2-atk-dev
+
+%description dev32
+dev32 components for the at-spi2-atk package.
+
+
 %package lib
 Summary: lib components for the at-spi2-atk package.
 Group: Libraries
@@ -46,14 +68,34 @@ Group: Libraries
 lib components for the at-spi2-atk package.
 
 
+%package lib32
+Summary: lib32 components for the at-spi2-atk package.
+Group: Default
+
+%description lib32
+lib32 components for the at-spi2-atk package.
+
+
 %prep
 %setup -q -n at-spi2-atk-2.21.91
+pushd ..
+cp -a at-spi2-atk-2.21.91 build32
+popd
 
 %build
 export LANG=C
+export SOURCE_DATE_EPOCH=1483289967
 %configure --disable-static
 make V=1  %{?_smp_mflags}
 
+pushd ../build32/
+export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+export CFLAGS="$CFLAGS -m32"
+export CXXFLAGS="$CXXFLAGS -m32"
+export LDFLAGS="$LDFLAGS -m32"
+%configure --disable-static    --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
+make V=1  %{?_smp_mflags}
+popd
 %check
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
@@ -63,19 +105,42 @@ make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
 rm -rf %{buildroot}
+pushd ../build32/
+%make_install32
+if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
+then
+pushd %{buildroot}/usr/lib32/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+popd
 %make_install
 
 %files
 %defattr(-,root,root,-)
+/usr/lib32/gnome-settings-daemon-3.0/gtk-modules/at-spi2-atk.desktop
 /usr/lib64/gnome-settings-daemon-3.0/gtk-modules/at-spi2-atk.desktop
 
 %files dev
 %defattr(-,root,root,-)
 /usr/include/at-spi2-atk/2.0/atk-bridge.h
-/usr/lib64/*.so
-/usr/lib64/pkgconfig/*.pc
+/usr/lib64/libatk-bridge-2.0.so
+/usr/lib64/pkgconfig/atk-bridge-2.0.pc
+
+%files dev32
+%defattr(-,root,root,-)
+/usr/lib32/libatk-bridge-2.0.so
+/usr/lib32/pkgconfig/32atk-bridge-2.0.pc
+/usr/lib32/pkgconfig/atk-bridge-2.0.pc
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/*.so.*
 /usr/lib64/gtk-2.0/modules/libatk-bridge.so
+/usr/lib64/libatk-bridge-2.0.so.0
+/usr/lib64/libatk-bridge-2.0.so.0.0.0
+
+%files lib32
+%defattr(-,root,root,-)
+/usr/lib32/gtk-2.0/modules/libatk-bridge.so
+/usr/lib32/libatk-bridge-2.0.so.0
+/usr/lib32/libatk-bridge-2.0.so.0.0.0
