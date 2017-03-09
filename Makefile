@@ -1,5 +1,5 @@
 PKG_NAME := at-spi2-atk
-URL := http://ftp.gnome.org/pub/GNOME/sources/at-spi2-atk/2.21/at-spi2-atk-2.21.91.tar.xz
+URL := https://download.gnome.org/sources/at-spi2-atk/2.22/at-spi2-atk-2.22.0.tar.xz
 
 
 include ../common/Makefile.common
