@@ -4,12 +4,12 @@
 #
 Name     : at-spi2-atk
 Version  : 2.24.0
-Release  : 5
+Release  : 6
 URL      : https://download.gnome.org/sources/at-spi2-atk/2.24/at-spi2-atk-2.24.0.tar.xz
 Source0  : https://download.gnome.org/sources/at-spi2-atk/2.24/at-spi2-atk-2.24.0.tar.xz
 Summary  : ATK/D-Bus Bridge
 Group    : Development/Tools
-License  : GPL-2.0 LGPL-2.0
+License  : LGPL-2.0
 Requires: at-spi2-atk-lib
 BuildRequires : gcc-dev32
 BuildRequires : gcc-libgcc32
@@ -84,7 +84,11 @@ popd
 
 %build
 export LANG=C
-export SOURCE_DATE_EPOCH=1490635820
+export SOURCE_DATE_EPOCH=1491879351
+export CFLAGS="$CFLAGS -Os -ffunction-sections -fno-semantic-interposition "
+export FCFLAGS="$CFLAGS -Os -ffunction-sections -fno-semantic-interposition "
+export FFLAGS="$CFLAGS -Os -ffunction-sections -fno-semantic-interposition "
+export CXXFLAGS="$CXXFLAGS -Os -ffunction-sections -fno-semantic-interposition "
 %configure --disable-static
 make V=1  %{?_smp_mflags}
 
@@ -104,7 +108,7 @@ export no_proxy=localhost
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1490635820
+export SOURCE_DATE_EPOCH=1491879351
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
