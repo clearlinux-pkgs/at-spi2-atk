@@ -4,7 +4,7 @@
 #
 Name     : at-spi2-atk
 Version  : 2.26.2
-Release  : 13
+Release  : 14
 URL      : https://download.gnome.org/sources/at-spi2-atk/2.26/at-spi2-atk-2.26.2.tar.xz
 Source0  : https://download.gnome.org/sources/at-spi2-atk/2.26/at-spi2-atk-2.26.2.tar.xz
 Summary  : ATK/D-Bus Bridge
