@@ -4,22 +4,24 @@
 #
 Name     : at-spi2-atk
 Version  : 2.26.2
-Release  : 14
+Release  : 15
 URL      : https://download.gnome.org/sources/at-spi2-atk/2.26/at-spi2-atk-2.26.2.tar.xz
 Source0  : https://download.gnome.org/sources/at-spi2-atk/2.26/at-spi2-atk-2.26.2.tar.xz
 Summary  : ATK/D-Bus Bridge
 Group    : Development/Tools
 License  : LGPL-2.0
 Requires: at-spi2-atk-lib
+Requires: at-spi2-atk-license
+BuildRequires : buildreq-gnome
+BuildRequires : buildreq-meson
 BuildRequires : gcc-dev32
 BuildRequires : gcc-libgcc32
 BuildRequires : gcc-libstdc++32
 BuildRequires : gettext
 BuildRequires : glibc-dev32
 BuildRequires : glibc-libc32
-BuildRequires : meson
-BuildRequires : ninja
 BuildRequires : perl(XML::Parser)
+BuildRequires : pkg-config
 BuildRequires : pkgconfig(32atk)
 BuildRequires : pkgconfig(32atspi-2)
 BuildRequires : pkgconfig(32dbus-1)
@@ -34,7 +36,6 @@ BuildRequires : pkgconfig(glib-2.0)
 BuildRequires : pkgconfig(gmodule-2.0)
 BuildRequires : pkgconfig(gobject-2.0)
 BuildRequires : pkgconfig(libxml-2.0)
-BuildRequires : python3
 
 %description
 D-Bus AT-SPI
@@ -66,6 +67,7 @@ dev32 components for the at-spi2-atk package.
 %package lib
 Summary: lib components for the at-spi2-atk package.
 Group: Libraries
+Requires: at-spi2-atk-license
 
 %description lib
 lib components for the at-spi2-atk package.
@@ -74,9 +76,18 @@ lib components for the at-spi2-atk package.
 %package lib32
 Summary: lib32 components for the at-spi2-atk package.
 Group: Default
+Requires: at-spi2-atk-license
 
 %description lib32
 lib32 components for the at-spi2-atk package.
+
+
+%package license
+Summary: license components for the at-spi2-atk package.
+Group: Default
+
+%description license
+license components for the at-spi2-atk package.
 
 
 %prep
@@ -90,7 +101,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1522111449
+export SOURCE_DATE_EPOCH=1536130857
 export CFLAGS="$CFLAGS -Os -fdata-sections -ffunction-sections -fno-semantic-interposition "
 export FCFLAGS="$CFLAGS -Os -fdata-sections -ffunction-sections -fno-semantic-interposition "
 export FFLAGS="$CFLAGS -Os -fdata-sections -ffunction-sections -fno-semantic-interposition "
@@ -114,8 +125,10 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1522111449
+export SOURCE_DATE_EPOCH=1536130857
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/doc/at-spi2-atk
+cp COPYING %{buildroot}/usr/share/doc/at-spi2-atk/COPYING
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -155,3 +168,7 @@ popd
 /usr/lib32/gtk-2.0/modules/libatk-bridge.so
 /usr/lib32/libatk-bridge-2.0.so.0
 /usr/lib32/libatk-bridge-2.0.so.0.0.0
+
+%files license
+%defattr(-,root,root,-)
+/usr/share/doc/at-spi2-atk/COPYING
