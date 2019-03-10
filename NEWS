@@ -1,14 +1,10 @@
-What's new in at-spi2-atk 2.26.2:
+What's new in at-spi2-atk 2.29.1:
 
-* Fix a couple of cache-related functions so that they don't return
-  without unlocking the mutex (bgo#793625).
+* Fix a case where we could return without unlocking a mutex (bgo#793625).
 
-What's new in at-spi2-atk 2.27.92:
+* Add ScrollTo and ScrollToPoint interfaces.
 
-* Fix a couple of cache-related functions so that they don't return
-  without unlocking the mutex (bgo#793625).
-
-* Dropped autotools support. Building is now done using meson.
+* Fix various compiler warnings and build issues.
 
 What's new in at-spi2-atk 2.26.1:
 
