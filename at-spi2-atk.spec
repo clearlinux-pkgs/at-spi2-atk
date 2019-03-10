@@ -4,7 +4,7 @@
 #
 Name     : at-spi2-atk
 Version  : 2.30.1
-Release  : 18
+Release  : 19
 URL      : https://download.gnome.org/sources/at-spi2-atk/2.30/at-spi2-atk-2.30.1.tar.xz
 Source0  : https://download.gnome.org/sources/at-spi2-atk/2.30/at-spi2-atk-2.30.1.tar.xz
 Summary  : A GTK+ module that bridges ATK to D-Bus at-spi
