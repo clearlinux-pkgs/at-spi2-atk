@@ -4,7 +4,7 @@
 #
 Name     : at-spi2-atk
 Version  : 2.38.0
-Release  : 26
+Release  : 27
 URL      : https://download.gnome.org/sources/at-spi2-atk/2.38/at-spi2-atk-2.38.0.tar.xz
 Source0  : https://download.gnome.org/sources/at-spi2-atk/2.38/at-spi2-atk-2.38.0.tar.xz
 Summary  : No detailed summary available
@@ -13,22 +13,12 @@ License  : LGPL-2.1
 Requires: at-spi2-atk-lib = %{version}-%{release}
 Requires: at-spi2-atk-license = %{version}-%{release}
 BuildRequires : at-spi2-core-dev
-BuildRequires : at-spi2-core-dev32
 BuildRequires : atk-dev
-BuildRequires : atk-dev32
 BuildRequires : buildreq-gnome
 BuildRequires : buildreq-meson
 BuildRequires : dbus-dev
-BuildRequires : dbus-dev32
-BuildRequires : gcc-dev32
-BuildRequires : gcc-libgcc32
-BuildRequires : gcc-libstdc++32
 BuildRequires : glib-dev
-BuildRequires : glib-dev32
-BuildRequires : glibc-dev32
-BuildRequires : glibc-libc32
 BuildRequires : libxml2-dev
-BuildRequires : libxml2-dev32
 
 %description
 D-Bus AT-SPI
@@ -48,16 +38,6 @@ Requires: at-spi2-atk = %{version}-%{release}
 dev components for the at-spi2-atk package.
 
 
-%package dev32
-Summary: dev32 components for the at-spi2-atk package.
-Group: Default
-Requires: at-spi2-atk-lib32 = %{version}-%{release}
-Requires: at-spi2-atk-dev = %{version}-%{release}
-
-%description dev32
-dev32 components for the at-spi2-atk package.
-
-
 %package lib
 Summary: lib components for the at-spi2-atk package.
 Group: Libraries
@@ -65,15 +45,6 @@ Requires: at-spi2-atk-license = %{version}-%{release}
 
 %description lib
 lib components for the at-spi2-atk package.
-
-
-%package lib32
-Summary: lib32 components for the at-spi2-atk package.
-Group: Default
-Requires: at-spi2-atk-license = %{version}-%{release}
-
-%description lib32
-lib32 components for the at-spi2-atk package.
 
 
 %package license
@@ -87,16 +58,13 @@ license components for the at-spi2-atk package.
 %prep
 %setup -q -n at-spi2-atk-2.38.0
 cd %{_builddir}/at-spi2-atk-2.38.0
-pushd ..
-cp -a at-spi2-atk-2.38.0 build32
-popd
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1600275061
+export SOURCE_DATE_EPOCH=1600302641
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -107,15 +75,6 @@ export FFLAGS="$FFLAGS -O3 -Os -fdata-sections -ffat-lto-objects -ffunction-sect
 export CXXFLAGS="$CXXFLAGS -O3 -Os -fdata-sections -ffat-lto-objects -ffunction-sections -flto=4 -fno-semantic-interposition "
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --libdir=lib64 --prefix=/usr --buildtype=plain   builddir
 ninja -v -C builddir
-pushd ../build32/
-export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
-export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
-export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
-export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
-export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
-meson --libdir=lib32 --prefix=/usr --buildtype=plain   builddir
-ninja -v -C builddir
-popd
 
 %check
 export LANG=C.UTF-8
@@ -123,26 +82,14 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 meson test -C builddir || :
-cd ../build32;
-meson test -C builddir || : || :
 
 %install
 mkdir -p %{buildroot}/usr/share/package-licenses/at-spi2-atk
 cp %{_builddir}/at-spi2-atk-2.38.0/COPYING %{buildroot}/usr/share/package-licenses/at-spi2-atk/01a6b4bf79aca9b556822601186afab86e8c4fbf
-pushd ../build32/
-DESTDIR=%{buildroot} ninja -C builddir install
-if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
-then
-pushd %{buildroot}/usr/lib32/pkgconfig
-for i in *.pc ; do ln -s $i 32$i ; done
-popd
-fi
-popd
 DESTDIR=%{buildroot} ninja -C builddir install
 
 %files
 %defattr(-,root,root,-)
-/usr/lib32/gnome-settings-daemon-3.0/gtk-modules/at-spi2-atk.desktop
 /usr/lib64/gnome-settings-daemon-3.0/gtk-modules/at-spi2-atk.desktop
 
 %files dev
@@ -151,23 +98,11 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/libatk-bridge-2.0.so
 /usr/lib64/pkgconfig/atk-bridge-2.0.pc
 
-%files dev32
-%defattr(-,root,root,-)
-/usr/lib32/libatk-bridge-2.0.so
-/usr/lib32/pkgconfig/32atk-bridge-2.0.pc
-/usr/lib32/pkgconfig/atk-bridge-2.0.pc
-
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/gtk-2.0/modules/libatk-bridge.so
 /usr/lib64/libatk-bridge-2.0.so.0
 /usr/lib64/libatk-bridge-2.0.so.0.0.0
-
-%files lib32
-%defattr(-,root,root,-)
-/usr/lib32/gtk-2.0/modules/libatk-bridge.so
-/usr/lib32/libatk-bridge-2.0.so.0
-/usr/lib32/libatk-bridge-2.0.so.0.0.0
 
 %files license
 %defattr(0644,root,root,0755)
