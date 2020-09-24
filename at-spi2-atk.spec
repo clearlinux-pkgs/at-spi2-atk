@@ -4,7 +4,7 @@
 #
 Name     : at-spi2-atk
 Version  : 2.38.0
-Release  : 27
+Release  : 28
 URL      : https://download.gnome.org/sources/at-spi2-atk/2.38/at-spi2-atk-2.38.0.tar.xz
 Source0  : https://download.gnome.org/sources/at-spi2-atk/2.38/at-spi2-atk-2.38.0.tar.xz
 Summary  : No detailed summary available
